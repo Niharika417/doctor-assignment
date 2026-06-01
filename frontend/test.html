@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shotlin Health - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .card {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        button {
+            background: #667eea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #5a67d8;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🏥 Shotlin Health System</h1>
+        <p>Testing server connection...</p>
+        
+        <div id="status">
+            <p>Checking backend connection...</p>
+        </div>
+        
+        <div>
+            <button onclick="testHealth()">Test Health Endpoint</button>
+            <button onclick="testLogin()">Test Login</button>
+        </div>
+        
+        <div id="result" style="margin-top: 20px;"></div>
+        
+        <hr>
+        <h3>Demo Credentials:</h3>
+        <p>Email: patient@example.com<br>Password: any password</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        
+        async function testHealth() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing health endpoint...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/health`);
+                const data = await response.json();
+                resultDiv.innerHTML = `<pre class="success">✅ Health Check Success!\n${JSON.stringify(data, null, 2)}</pre>`;
+                document.getElementById('status').innerHTML = '<p class="success">✅ Backend is running on port 5000!</p>';
+            } catch (error) {
+                resultDiv.innerHTML = `<pre class="error">❌ Error: ${error.message}\n\nMake sure backend is running on port 5000</pre>`;
+                document.getElementById('status').innerHTML = '<p class="error">❌ Backend not running! Please start the backend server first.</p>';
+            }
+        }
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing login...</p>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'test@example.com', password: 'test' })
+                });
+                const data = await response.json();
+                resultDiv.innerHTML = `<pre class="success">✅ Login Success!\n${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                resultDiv.innerHTML = `<pre class="error">❌ Login Error: ${error.message}</pre>`;
+            }
+        }
+        
+        // Auto test on page load
+        testHealth();
+    </script>
+</body>
+</html>
